@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 
@@ -17,8 +17,13 @@ namespace ConfuserKiller.Protections {
                         if (flag4) {
                             for (int i = 0; i < methodDef.Body.Instructions.Count; i++) {
                                 bool flag5 = methodDef.Body.Instructions[i].OpCode == OpCodes.Call && methodDef.Body.Instructions[i].Operand.ToString().Contains("CallingAssembly");
-                                bool flag6 = flag5;
-                                if (flag6) {
+                                bool flag6 = methodDef.Body.Instructions[i].OpCode == OpCodes.Call && methodDef.Body.Instructions[i].Operand.ToString().Contains("EntryAssembly");
+                                if (flag5) {
+                                    methodDef.Body.Instructions[i].Operand = (methodDef.Body.Instructions[i].Operand = module.Import(typeof(Assembly).GetMethod("GetExecutingAssembly")));
+                                    num++;
+                                }
+                                if (flag6)
+                                {
                                     methodDef.Body.Instructions[i].Operand = (methodDef.Body.Instructions[i].Operand = module.Import(typeof(Assembly).GetMethod("GetExecutingAssembly")));
                                     num++;
                                 }
